@@ -10,19 +10,16 @@ end
 ---@type vim.Option
 local rtp = vim.opt.rtp
 rtp:prepend(lazypath)
-local spec = {
-  { import = "plugins.keybinds" },
+require("lazy").setup({
+  { import = "plugins.whichkey" },
   { import = "plugins.syntax" },
-  { import = "plugins.lsp" },
   { import = "plugins.theme" },
   { import = "plugins.dashboard" },
   { import = "plugins.neotree" },
-  { import = "plugins.bufferline" },
   { import = "plugins.telescope" },
-}
-if vim.g.temp_plugins then
-  table.insert(spec, { import = "temp_plugins" })
-end
-require("lazy").setup(spec, {
+  { import = "plugins.barbar" },
+  { import = "plugins.vimbegood" },
+  { import = "plugins.statusline" },
+}, {
   lockfile = vim.fn.stdpath "cache" .. "/lazy-lock.json",
 })

@@ -1,5 +1,4 @@
--- Keybinds
-
+-- which-key: pops up the keys that can follow what you just typed (Vim's own, no custom maps)
 return {
   { -- Useful plugin to show you pending keybinds.
     "folke/which-key.nvim",
@@ -39,6 +38,7 @@ return {
           F12 = "<F12>",
         },
       },
+
     },
   },
 }

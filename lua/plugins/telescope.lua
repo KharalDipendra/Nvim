@@ -123,7 +123,7 @@ return {
         sorting_strategy = "ascending",
         winblend = 0,
         border = {},
-        borderchars = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
+        borderchars = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
       },
       pickers = {
         find_files = {

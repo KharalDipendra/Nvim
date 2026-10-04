@@ -1,6 +1,6 @@
 return {
   "nvim-neo-tree/neo-tree.nvim",
-  lazy = false, -- needed so `nvim .` and `:e .` open the tree; neo-tree lazy-loads itself
+  lazy = false,
   dependencies = {
     "nvim-lua/plenary.nvim",
     "nvim-tree/nvim-web-devicons",
@@ -8,8 +8,7 @@ return {
   },
   config = function()
     require("neo-tree").setup {
-      close_if_last_window = true, -- :q on the last file quits nvim instead of leaving the tree open
-      popup_border_style = "rounded",
+      popup_border_style = "single",
       window = {
         position = "left",
         -- position = "float",
@@ -25,7 +24,7 @@ return {
           enabled = true, -- This finds the file in the tree
           leave_dirs_open = true, -- Keeps the path expanded
         },
-        hijack_netrw_behavior = "open_default",
+        hijack_netrw_behavior = "open_current", -- `nvim dir` shows the tree in the window itself, no empty extra buffer
         filtered_items = {
           hide_dotfiles = false, -- Explicitly prevents hiding dotfiles
         },

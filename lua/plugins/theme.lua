@@ -1,3 +1,43 @@
+-- Active theme. Both are installed: set this to "tokyonight-storm" to switch back,
+-- or try one live with :colorscheme gruvbox / :colorscheme tokyonight-storm
+local theme = "gruvbox"
+
+-- Paint the terminal's padding/leftover rows with the theme bg so nvim fills the window edge to edge
+local function sync_term_bg()
+  local bg = vim.api.nvim_get_hl(0, { name = "Normal" }).bg
+  if bg then
+    vim.api.nvim_ui_send(("\027]11;#%06x\007"):format(bg))
+  end
+end
+vim.api.nvim_create_autocmd({ "UIEnter", "ColorScheme" }, { callback = sync_term_bg })
+vim.api.nvim_create_autocmd("VimLeavePre", {
+  callback = function()
+    vim.api.nvim_ui_send "\027]111\007" -- restore terminal's own bg
+  end,
+})
+
+-- In kitty: fullscreen and no padding while nvim runs, all undone on exit
+if vim.env.KITTY_LISTEN_ON and not vim.env.NVIM then
+  local function kitty(args)
+    return vim.system(vim.list_extend({ "kitty", "@" }, args))
+  end
+  -- ponytail: kitty can't report fullscreen state, so starting nvim from an
+  -- already-fullscreen kitty (or a 2nd nvim in the same window) flips it back out
+  vim.api.nvim_create_autocmd("UIEnter", {
+    once = true,
+    callback = function()
+      kitty { "action", "toggle_fullscreen" }
+      kitty { "set-spacing", "padding=0" }
+    end,
+  })
+  vim.api.nvim_create_autocmd("VimLeavePre", {
+    callback = function()
+      kitty({ "action", "toggle_fullscreen" }):wait()
+      kitty({ "set-spacing", "padding=default" }):wait()
+    end,
+  })
+end
+
 return {
   -- {
   --   "terminal-theme",
@@ -48,19 +88,31 @@ return {
   --   end,
   -- },
 
+  { "folke/tokyonight.nvim", lazy = true },
   {
     "ellisonleao/gruvbox.nvim",
+    lazy = false,
     priority = 1000,
     config = function()
-      vim.o.background = "dark"
-      vim.cmd.colorscheme "gruvbox"
-      -- gruvbox gives the sign column a lighter strip; make it blend in with the code
-      for name, hl in pairs(vim.api.nvim_get_hl(0, {})) do
-        if (name == "SignColumn" or name:match "^Gruvbox%a+Sign$") and hl.bg then
-          hl.bg = nil
-          vim.api.nvim_set_hl(0, name, hl)
-        end
+      -- Give gruvbox the same layout tokyonight has: current tab blends into the editor,
+      -- tab strip + file tree a shade darker, gutter flush with the code (no light-gray strips)
+      local bg, dark, fg, gray = "#282828", "#1d2021", "#ebdbb2", "#928374"
+      local overrides = {
+        SignColumn = { bg = bg },
+        TabLineSel = { fg = fg, bg = bg },
+        TabLine = { fg = gray, bg = dark },
+        TabLineFill = { bg = dark },
+        BufferVisible = { fg = fg, bg = dark },
+        BufferOffset = { fg = gray, bg = dark },
+        NeoTreeNormal = { bg = dark },
+        NeoTreeNormalNC = { bg = dark },
+        NeoTreeEndOfBuffer = { fg = dark, bg = dark },
+      }
+      for _, c in ipairs { "Red", "Green", "Yellow", "Blue", "Purple", "Aqua", "Orange" } do
+        overrides["Gruvbox" .. c .. "Sign"] = { bg = bg }
       end
+      require("gruvbox").setup { overrides = overrides }
+      vim.cmd.colorscheme(theme)
     end,
   },
 
