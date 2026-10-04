@@ -2,22 +2,37 @@
 -- or try one live with :colorscheme gruvbox / :colorscheme tokyonight-storm
 local theme = "gruvbox"
 
--- Paint the terminal's padding/leftover rows with the theme bg so nvim fills the window edge to edge
-local function sync_term_bg()
-  local bg = vim.api.nvim_get_hl(0, { name = "Normal" }).bg
-  if bg then
-    vim.api.nvim_ui_send(("\027]11;#%06x\007"):format(bg))
+-- Everything below is kitty-only; any other terminal (macOS Terminal, iTerm2, Konsole...) is left untouched.
+local in_kitty = vim.env.KITTY_WINDOW_ID ~= nil
+
+-- Paint kitty's padding/leftover rows with the theme bg so nvim fills the window edge to edge
+if in_kitty then
+  local function sync_term_bg()
+    local bg = vim.api.nvim_get_hl(0, { name = "Normal" }).bg
+    if bg then
+      vim.api.nvim_ui_send(("\027]11;#%06x\007"):format(bg))
+    end
   end
+  vim.api.nvim_create_autocmd({ "UIEnter", "ColorScheme" }, { callback = sync_term_bg })
+  vim.api.nvim_create_autocmd("VimLeavePre", {
+    callback = function()
+      vim.api.nvim_ui_send "\027]111\007" -- restore kitty's own bg
+    end,
+  })
 end
-vim.api.nvim_create_autocmd({ "UIEnter", "ColorScheme" }, { callback = sync_term_bg })
-vim.api.nvim_create_autocmd("VimLeavePre", {
-  callback = function()
-    vim.api.nvim_ui_send "\027]111\007" -- restore terminal's own bg
-  end,
-})
+
+-- Short edits git opens nvim for (commit messages, rebase lists) shouldn't flip kitty's fullscreen
+local function git_quick_edit()
+  for _, f in ipairs(vim.fn.argv()) do
+    if f:match "%.git/" or f:match "_EDITMSG$" or f:match "git%-rebase%-todo$" then
+      return true
+    end
+  end
+  return false
+end
 
 -- In kitty: fullscreen and no padding while nvim runs, all undone on exit
-if vim.env.KITTY_LISTEN_ON and not vim.env.NVIM then
+if in_kitty and vim.env.KITTY_LISTEN_ON and not vim.env.NVIM and vim.fn.executable "kitty" == 1 and not git_quick_edit() then
   local function kitty(args)
     return vim.system(vim.list_extend({ "kitty", "@" }, args))
   end

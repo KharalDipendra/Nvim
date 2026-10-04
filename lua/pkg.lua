@@ -22,6 +22,4 @@ require("lazy").setup({
   { import = "plugins.statusline" },
   { import = "plugins.hardtime" },
   { import = "plugins.trouble" },
-}, {
-  lockfile = vim.fn.stdpath "cache" .. "/lazy-lock.json",
-})
+})  -- lazy-lock.json sits next to init.lua and is committed, so every machine gets the same plugin versions

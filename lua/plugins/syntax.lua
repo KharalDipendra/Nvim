@@ -91,7 +91,7 @@ return {
       vim.lsp.enable "gdscript"
     end,
     opts = {
-      ensure_installed = { "lua_ls", "rust_analyzer", "pyright", "ts_ls", "clangd", "gopls", "bashls", "jsonls", "csharp_ls" },
+      ensure_installed = { "lua_ls", "rust_analyzer", "pyright", "ts_ls", "clangd", "gopls", "bashls", "jsonls", "csharp_ls", "ruff" },
     },
   },
 
@@ -173,6 +173,7 @@ return {
       end,
       formatters_by_ft = {
         lua = { "stylua" },
+        python = { "ruff_format" },
         rust = { "rustfmt" },
         go = { "gofmt" },
         cpp = { "clang-format" },
