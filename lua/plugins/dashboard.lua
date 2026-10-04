@@ -97,19 +97,26 @@ return {
       local alpha = require "alpha"
       local dashboard = require "alpha.themes.dashboard"
       local width = 50
+      local line = { type = "text", val = string.rep("─", width), opts = { position = "center", hl = "WinSeparator" } }
 
-      local function btn(sc, icon, text, fn, hl)
-        local b = dashboard.button(sc, icon .. "  " .. text)
+      local function btn(sc, text, fn, hl)
+        local b = dashboard.button(sc, text)
         b.on_press = fn
         b.opts.keymap = { "n", sc, fn, { nowait = true, silent = true } }
         b.opts.width = width
-        b.opts.hl = hl or { { "Type", 0, #icon } }
+        b.opts.cursor = 0
+        b.opts.hl = hl
         b.opts.hl_shortcut = "Special"
         return b
       end
 
-      local function title(text)
-        return { type = "text", val = string.format("%-" .. width .. "s", text), opts = { position = "center", hl = "Title" } }
+      -- rows with a divider under each one
+      local function list(name, buttons)
+        local out = { { type = "text", val = string.format("%-" .. width .. "s", name), opts = { position = "center", hl = "Title" } }, line }
+        for _, b in ipairs(buttons) do
+          vim.list_extend(out, { b, line })
+        end
+        return out
       end
 
       local function greeting()
@@ -123,41 +130,38 @@ return {
         if i > 5 then
           break
         end
-        local label = vim.fn.fnamemodify(dir, ":t")
-        local path = vim.fn.fnamemodify(dir, ":~:h")
-        local icon = ""
-        local text = string.format("%-20s", label) .. path
-        if #text > width - 8 then
-          text = text:sub(1, width - 9) .. "…"
+        local label = string.format("%-20s", vim.fn.fnamemodify(dir, ":t"))
+        local text = label .. vim.fn.fnamemodify(dir, ":~:h")
+        if #text > width - 6 then
+          text = text:sub(1, width - 7) .. "…"
         end
-        local path_start = #icon + 2 + 20
-        projects[#projects + 1] = btn(tostring(i), icon, text, function()
+        projects[#projects + 1] = btn(tostring(i), text, function()
           open_project(dir)
-        end, { { "Type", 0, #icon }, { "Comment", path_start, -1 } })
+        end, { { "Comment", #label, -1 } })
       end
 
       local actions = {
-        btn("o", "", "Open folder", open_folder),
-        btn("g", "", "Git repositories", open_git_repo),
-        btn("f", "󰈞", "Find file", function()
+        btn("o", "Open folder", open_folder),
+        btn("g", "Git repositories", open_git_repo),
+        btn("f", "Find file", function()
           vim.cmd "Telescope find_files"
         end),
-        btn("r", "", "Recent files", function()
+        btn("r", "Recent files", function()
           vim.cmd "Telescope oldfiles"
         end),
-        btn("w", "󰱼", "Grep text", function()
+        btn("w", "Grep text", function()
           vim.cmd "Telescope live_grep"
         end),
-        btn("n", "", "New file", function()
+        btn("n", "New file", function()
           vim.cmd "enew | startinsert"
         end),
-        btn("c", "", "Config", function()
+        btn("c", "Config", function()
           open_project(vim.fn.stdpath "config")
         end),
-        btn("p", "󰒲", "Plugins", function()
+        btn("p", "Plugins", function()
           vim.cmd "Lazy"
         end),
-        btn("q", "", "Quit", function()
+        btn("q", "Quit", function()
           vim.cmd "qa"
         end),
       }
@@ -176,23 +180,17 @@ return {
         { type = "padding", val = 2 },
       }
       if #projects > 0 then
-        vim.list_extend(body, {
-          title "Recent projects",
-          { type = "padding", val = 1 },
-          { type = "group", val = projects, opts = { spacing = 0 } },
-          { type = "padding", val = 2 },
-        })
+        vim.list_extend(body, list("Recent projects", projects))
+        body[#body + 1] = { type = "padding", val = 2 }
       end
+      vim.list_extend(body, list("Actions", actions))
       vim.list_extend(body, {
-        title "Actions",
-        { type = "padding", val = 1 },
-        { type = "group", val = actions, opts = { spacing = 0 } },
         { type = "padding", val = 2 },
         {
           type = "text",
           val = function()
             local s = require("lazy").stats()
-            return string.format("󱐋 %d plugins in %.0fms", s.count, s.startuptime)
+            return string.format("%d plugins in %.0fms", s.count, s.startuptime)
           end,
           opts = { position = "center", hl = "Comment" },
         },

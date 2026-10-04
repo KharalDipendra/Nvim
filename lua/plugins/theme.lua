@@ -54,6 +54,13 @@ return {
     config = function()
       vim.o.background = "dark"
       vim.cmd.colorscheme "gruvbox"
+      -- gruvbox gives the sign column a lighter strip; make it blend in with the code
+      for name, hl in pairs(vim.api.nvim_get_hl(0, {})) do
+        if (name == "SignColumn" or name:match "^Gruvbox%a+Sign$") and hl.bg then
+          hl.bg = nil
+          vim.api.nvim_set_hl(0, name, hl)
+        end
+      end
     end,
   },
 

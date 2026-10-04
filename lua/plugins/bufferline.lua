@@ -23,14 +23,19 @@ return {
   end,
   opts = {
     options = {
-      offsets = { { filetype = "neo-tree", text = "Files", highlight = "Directory", separator = true } },
+      offsets = {
+        {
+          filetype = "neo-tree",
+          -- OLED burn-in: the label drifts with the statusline (g:sl_shift, set in init.lua)
+          text = function()
+            return string.rep(" ", 2 * (vim.g.sl_shift or 0)) .. "Files"
+          end,
+          highlight = "Directory",
+          separator = true,
+        },
+      },
     },
   },
-  config = function(_, opts)
-    require("bufferline").setup(opts)
-    -- OLED burn-in: drift with the statusline (g:sl_shift, set in init.lua)
-    vim.o.tabline = "%{repeat(' ', get(g:, 'sl_shift', 0))}%{%v:lua.nvim_bufferline()%}"
-  end,
   keys = {
     { "<S-l>", "<cmd>BufferLineCycleNext<cr>", desc = "Next tab" },
     { "<S-h>", "<cmd>BufferLineCyclePrev<cr>", desc = "Previous tab" },

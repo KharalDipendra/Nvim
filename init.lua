@@ -32,8 +32,9 @@ vim.o.inccommand = "split"
 vim.o.cursorline = true
 vim.o.scrolloff = 10
 vim.o.confirm = true
+vim.opt.fillchars:append { eob = " " } -- no ~ on lines past the end of the file
 vim.o.laststatus = 3 -- one full-width statusline instead of a cramped one per split
--- OLED burn-in: drift the statusline (and bufferline's tabline) 0..6 columns right and back, one step a minute
+-- OLED burn-in: drift the statusline (and the tree's "Files" label) 0..6 columns right and back, one step a minute
 vim.g.sl_shift = 0
 vim.o.statusline = "%{repeat(' ', g:sl_shift)}" .. vim.o.statusline .. "%{repeat(' ', 6 - g:sl_shift)}"
 local sl_tick = 0
