@@ -1,0 +1,145 @@
+return {
+  -- {
+  --   "terminal-theme",
+  --   dir = vim.fn.stdpath "config",
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     -- Disable TrueColor so Neovim uses your terminal's ANSI palette~
+  --     vim.opt.termguicolors = false
+  --
+  --     local transparent_groups = {
+  --       "Normal",
+  --       "NormalNC",
+  --       "NormalFloat",
+  --       "FloatBorder",
+  --       "TelescopeNormal",
+  --       "TelescopeBorder",
+  --       "VertSplit",
+  --       "WinSeparator",
+  --       "StatusLine",
+  --       "StatusLineNC",
+  --       "NeoTreeNormal",
+  --       "NeoTreeNormalNC",
+  --       "NeoTreeEndOfBuffer",
+  --       "LineNr",
+  --       "SignColumn",
+  --     }
+  --
+  --     -- Keep backgrounds transparent across scheme reloads
+  --     vim.api.nvim_create_autocmd("ColorScheme", {
+  --       pattern = "*",
+  --       callback = function()
+  --         for _, group in ipairs(transparent_groups) do
+  --           vim.api.nvim_set_hl(0, group, { bg = "none", ctermbg = "none" })
+  --         end
+  --       end,
+  --     })
+  --
+  --     vim.cmd.colorscheme "default"
+  --   end,
+  -- },
+
+  -- {
+  --   "arcticicestudio/nord-vim",
+  --   priority = 1000, -- Make sure to load this before all the other start plugins.
+  --   config = function()
+  --     vim.cmd.colorscheme "nord"
+  --   end,
+  -- },
+
+  {
+    "ellisonleao/gruvbox.nvim",
+    priority = 1000,
+    config = function()
+      vim.o.background = "dark"
+      vim.cmd.colorscheme "gruvbox"
+    end,
+  },
+
+  -- {
+  --   "catppuccin/nvim",
+  --   priority = 1000,
+  --   config = function()
+  --     vim.cmd.colorscheme "catppuccin-mocha"
+  --     vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "TelescopeNormal", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "TelescopeBorder", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "VertSplit", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "StatusLine", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "NeoTreeNormal", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "NeoTreeNormalNC", { bg = "none" })
+  --   end,
+  -- },
+  -- {
+  --   "ful1e5/onedark.nvim",
+  --   priority = 1000,
+  --   config = function()
+  --     vim.cmd.colorscheme "onedark"
+  --     vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "TelescopeNormal", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "TelescopeBorder", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "VertSplit", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "StatusLine", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "NeoTreeNormal", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "NeoTreeNormalNC", { bg = "none" })
+  --   end,
+  -- },
+  -- {
+  --   "vague-theme/vague.nvim",
+  --   priority = 1000,
+  --   config = function()
+  --     vim.cmd.colorscheme "vague"
+  --     vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "TelescopeNormal", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "TelescopeBorder", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "VertSplit", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "StatusLine", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "NeoTreeNormal", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "NeoTreeNormalNC", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "NeoTreeEndOfBuffer", { bg = "none" })
+  --   end,
+  -- },
+  -- {
+  --   "shaunsingh/solarized.nvim",
+  --   priority = 1000,
+  --   lazy = false, -- ensures it loads immediately on startup
+  --   config = function()
+  --     -- Solarized requires setting the global background option to 'light'
+  --     vim.o.background = "light"
+  --     vim.g.solarized_disable_background = true
+  --
+  --     -- Load and apply the colorscheme
+  --     vim.cmd.colorscheme "solarized"
+  --   end,
+  -- },
+  --
+  -- {
+  --   "cpplain/flexoki.nvim",
+  --   lazy = false,
+  --   priority = 1000,
+  --   config = function()
+  --     vim.o.background = "light"
+  --     vim.cmd.colorscheme "flexoki"
+  --     vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "TelescopeNormal", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "TelescopeBorder", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "VertSplit", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "StatusLine", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "NeoTreeNormal", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "NeoTreeNormalNC", { bg = "none" })
+  --     vim.api.nvim_set_hl(0, "NeoTreeEndOfBuffer", { bg = "none" })
+  --   end,
+  -- },
+}
