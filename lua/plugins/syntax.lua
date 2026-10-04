@@ -48,6 +48,7 @@ return {
       require("nvim-treesitter").install {
         "bash", "c", "cpp", "go", "javascript", "json", "lua", "markdown",
         "markdown_inline", "python", "rust", "toml", "typescript", "tsx", "yaml",
+        "c_sharp", "gdscript", "godot_resource", "gdshader",
       }
       vim.api.nvim_create_autocmd("FileType", {
         callback = function(args)
@@ -65,8 +66,32 @@ return {
       { "mason-org/mason.nvim", opts = {} },
       "neovim/nvim-lspconfig",
     },
+    config = function(_, opts)
+      require("mason-lspconfig").setup(opts)
+      -- GDScript: the Godot editor hosts the language server (port 6005) while it is open; nothing to install.
+      -- Only connect when it is listening, so .gd files open quietly with Godot closed.
+      local function godot_listening()
+        local tcp, ok = vim.uv.new_tcp(), nil
+        tcp:connect("127.0.0.1", tonumber(vim.env.GDScript_Port or 6005), function(err)
+          ok = not err
+          tcp:close()
+        end)
+        vim.wait(200, function()
+          return ok ~= nil
+        end)
+        return ok
+      end
+      vim.lsp.config("gdscript", {
+        root_dir = function(bufnr, on_dir)
+          if godot_listening() then
+            on_dir(vim.fs.root(bufnr, { "project.godot", ".git" }))
+          end
+        end,
+      })
+      vim.lsp.enable "gdscript"
+    end,
     opts = {
-      ensure_installed = { "lua_ls", "rust_analyzer", "pyright", "ts_ls", "clangd", "gopls", "bashls", "jsonls" },
+      ensure_installed = { "lua_ls", "rust_analyzer", "pyright", "ts_ls", "clangd", "gopls", "bashls", "jsonls", "csharp_ls" },
     },
   },
 

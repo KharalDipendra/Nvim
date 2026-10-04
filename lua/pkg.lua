@@ -20,6 +20,8 @@ require("lazy").setup({
   { import = "plugins.barbar" },
   { import = "plugins.vimbegood" },
   { import = "plugins.statusline" },
+  { import = "plugins.hardtime" },
+  { import = "plugins.trouble" },
 }, {
   lockfile = vim.fn.stdpath "cache" .. "/lazy-lock.json",
 })
